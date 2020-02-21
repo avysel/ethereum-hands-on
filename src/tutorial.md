@@ -486,11 +486,11 @@ async function withdraw(account) {
 }
 ```
 
-### Exercice : afficher les événements de retrait
+## Exercice 1 : afficher les événements de retrait
 
 Sur le même modèle que pour les événements NameChanged, afficher les événement Withdraw.
 
-### Exercice : solution
+## Exercice 2 : solution
 
 Dans **index.html**, ajouter une zone :
 
@@ -514,20 +514,18 @@ Dans **blockchain.js**, créer une fonction qui récupère les événements et l
 */
 async function displayWithdrawEvents() {
 
-	// get all emited events from first block to last block
-	helloContract.getPastEvents("Withdraw", { fromBlock: 0, toBlock: 'latest' })
-	.then((events, error) => {
-		let htmlEvents = "<ul>";
-		events.forEach(function(item, index, array) {
-			htmlEvents+= ("<li>"+item.returnValues.ownerAddress+" : "+web3.utils.fromWei(item.returnValues.balance)+" ("+item.blockNumber+")</li>");
-		});
-		htmlEvents += "</ul>";
+    // get all emited events from first block to last block
+    helloContract.getPastEvents("Withdraw", { fromBlock: 0, toBlock: 'latest' })
+    .then((events, error) => {
+        let htmlEvents = "<ul>";
+        events.forEach(function(item, index, array) {
+            htmlEvents+= ("<li>"+item.returnValues.ownerAddress+" : "+web3.utils.fromWei(item.returnValues.balance)+" ("+item.blockNumber+")</li>");
+        });
+        htmlEvents += "</ul>";
         $('#withdraw-events').html(htmlEvents);
-	});
+    });
 }
 ```
-
-
 
 ### Test de sécurité
 

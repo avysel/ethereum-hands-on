@@ -456,10 +456,18 @@ async function withdraw(account) {
 
 }
 </code></pre>
-<h2 is-upgraded>Exercice : afficher les événements de retrait</h2>
-<p>Sur le même modèle que pour les événements NameChanged, afficher les événement Withdraw.</p>
-<h2 is-upgraded>Exercice : solution</h2>
-<p>Dans <strong>index.html</strong>, ajouter une zone :</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Exercice 1 : afficher les événements de retrait" duration="0">
+        <p>Sur le même modèle que pour les événements NameChanged, afficher les événement Withdraw.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Exercice 2 : solution" duration="0">
+        <p>Dans <strong>index.html</strong>, ajouter une zone :</p>
 <pre><code>&lt;div class=&#34;row&#34;&gt;
     &lt;div class=&#34;col-md-12&#34;&gt;
         &lt;div class=&#34;card&#34;&gt;
@@ -477,16 +485,16 @@ async function withdraw(account) {
 */
 async function displayWithdrawEvents() {
 
-	// get all emited events from first block to last block
-	helloContract.getPastEvents(&#34;Withdraw&#34;, { fromBlock: 0, toBlock: &#39;latest&#39; })
-	.then((events, error) =&gt; {
-		let htmlEvents = &#34;&lt;ul&gt;&#34;;
-		events.forEach(function(item, index, array) {
-			htmlEvents+= (&#34;&lt;li&gt;&#34;+item.returnValues.ownerAddress+&#34; : &#34;+web3.utils.fromWei(item.returnValues.balance)+&#34; (&#34;+item.blockNumber+&#34;)&lt;/li&gt;&#34;);
-		});
-		htmlEvents += &#34;&lt;/ul&gt;&#34;;
+    // get all emited events from first block to last block
+    helloContract.getPastEvents(&#34;Withdraw&#34;, { fromBlock: 0, toBlock: &#39;latest&#39; })
+    .then((events, error) =&gt; {
+        let htmlEvents = &#34;&lt;ul&gt;&#34;;
+        events.forEach(function(item, index, array) {
+            htmlEvents+= (&#34;&lt;li&gt;&#34;+item.returnValues.ownerAddress+&#34; : &#34;+web3.utils.fromWei(item.returnValues.balance)+&#34; (&#34;+item.blockNumber+&#34;)&lt;/li&gt;&#34;);
+        });
+        htmlEvents += &#34;&lt;/ul&gt;&#34;;
         $(&#39;#withdraw-events&#39;).html(htmlEvents);
-	});
+    });
 }
 </code></pre>
 <h2 is-upgraded>Test de sécurité</h2>
