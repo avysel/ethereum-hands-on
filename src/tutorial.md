@@ -550,7 +550,9 @@ Nous allons ajouter une nouvelle règle.
 
 Chaque modification de nom ne sera pas immédiatement validée. Elles seront enregistrées dans le smart contract sous forme de proposition.
 
-L'administrateur aura accès à un bouton qui lui permettra de sélectionner parmi toutes les proposition celle qui lui rapporte le plus. Elle sera alors appliquée. Les propositions non acceptées seront remboursées.
+Une proposition = un nom, un émetteur, un prix, une date/heure de création
+
+L'administrateur aura accès à une fonctionnalité qui sélectionnera automatiquement parmi toutes les proposition celle qui lui rapporte le plus. Elle sera alors appliquée. Les propositions non acceptées seront remboursées.
 
 On affichera l'ensemble des propositions disponibles.
 
@@ -559,10 +561,128 @@ Un compte peut avoir une seule proposition en attente.
 Si deux propositions ont un prix équivalent, celle proposée en premier sera sélectionnée.
 
 Indications :
-* utiliser les **mappings** et **struct** de Solidity
 * [https://solidity.readthedocs.io/en/latest/](https://solidity.readthedocs.io/en/latest/)
+* on utilisera les **struct** de Solidity pour représenter les propositions
+* on utilisera **mapping** pour stocker les propositions en les associants à l'adresse de l'émetteur
+* les **mapping** ne sont pas itérables, on gèrera un index manuellement avec un tableau d'adresses émetteur
+* on n'oubliera pas de vider ces structures de données un fois qu'elles ne sont plus utiles
+
 
 ## Exercice 2 : solution
+
+Le smart contract :
+
+```solidity
+pragma solidity ^0.5.0;
+
+contract owned {
+	address payable owner;
+
+	// Contract constructor: set owner
+	constructor() public {
+		owner = msg.sender;
+	}
+
+	// Access control modifier
+	modifier onlyOwner {
+	    require(msg.sender == owner, "Only the contract owner can call this function");
+	    _;
+	}
+
+	// Contract destructor
+	function destroy() public onlyOwner {
+		selfdestruct(owner);
+	}
+
+}
+
+contract ProposableHello is owned {
+
+    string private name;
+
+    event NameChanged(string newName, address userAddress, uint value);
+    event Withdraw(address ownerAddress, uint balance);
+
+    struct Proposal {
+        address payable sender;
+        string name;
+        uint value;
+        uint time;
+    }
+
+    address [] public proposers;
+
+    mapping(address => Proposal) public proposals;
+
+    constructor() public {
+        name = "nobody";
+    }
+
+    function setName(string memory newName) public payable {
+    	require(msg.value >= 2 ether, "Pay 2 ETH or more");
+        name = newName;
+        emit NameChanged(newName, msg.sender, msg.value);
+    }
+
+    function getName() public view returns (string memory) {
+        return name;
+    }
+
+    function withdraw() public onlyOwner {
+    	uint balance = address(this).balance;
+        msg.sender.transfer(balance);
+        emit Withdraw(msg.sender, balance);
+    }
+
+    function() external payable {
+        revert();
+    }
+
+    function createProposal(string memory newName) public payable {
+        require(msg.value >= 2 ether, "Pay 2 ETH or more");
+        proposers.push(msg.sender);
+        proposals[msg.sender] = Proposal(msg.sender, newName, msg.value, now);
+    }
+
+    function selectBestProposal() public onlyOwner {
+
+        Proposal memory bestProposal = proposals[proposers[0]];
+        delete proposals[proposers[0]];
+        delete proposers[0];
+
+        // search best proposal
+        for (uint i=1; i<proposers.length; i++) {
+            Proposal memory currentProposal = proposals[proposers[i]];
+            
+            if(( currentProposal.value > bestProposal.value) || (currentProposal.value == bestProposal.value && currentProposal.time < bestProposal.time)) {
+                
+                address payable sender = bestProposal.sender;
+                uint value = bestProposal.value;
+                
+                bestProposal = currentProposal;
+                
+                // refund sender of previous best
+                sender.transfer(value);
+                
+            }
+            else {
+                // refund sender
+                currentProposal.sender.transfer(currentProposal.value);
+            }
+            
+            delete proposals[proposers[i]];
+            delete proposers[i];
+        }
+        
+        // change value
+        name = bestProposal.name;
+        emit NameChanged(bestProposal.name, bestProposal.sender, bestProposal.value);
+        
+    }
+
+}
+```
+
 
 ## Affaire à suivre ...
 
