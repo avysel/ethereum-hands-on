@@ -8,7 +8,7 @@ feedback link: https://github.com/avysel/ethereum-devoxx
 
 # Ethereum Hands-on
 
-## Intro
+## Introduction
 
 Nous allons voir comment connecter une application javascript à la blockchain Ethereum en utilisant le framework *web3.js*.
 

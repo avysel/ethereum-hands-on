@@ -6,6 +6,8 @@
 
 cp -r ethereum-handson/* docs
 
+rm -R ethereum-handson
+
 pwd
 
 #git status
