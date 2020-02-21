@@ -486,11 +486,29 @@ async function withdraw(account) {
 }
 ```
 
+### Test de sécurité
+
+Usurper l'identité de l'administrateur :
+
+Sélectionner dans Metamask un compte autre que celui qui a déployé le contrat.
+
+En console, récupérer l'adresse *owner* du contrat puis appeler la fonction *withdraw* avec cette adresse en paramètre.
+
+```javascript
+web3.eth.getStorageAt("0x...",0,"latest").then( (v) => {console.log(v);} );
+```
+```javascript
+withdraw("0x...");
+```
+
+Ca ne fonctionne pas, Metamask empêche d'utiliser les clés privés d'un compte qui n'est pas le compte en cours d'utilisation.
+
+
 ## Exercice 1 : afficher les événements de retrait
 
 Sur le même modèle que pour les événements NameChanged, afficher les événement Withdraw.
 
-## Exercice 2 : solution
+## Exercice 1 : solution
 
 Dans **index.html**, ajouter une zone :
 
@@ -526,25 +544,25 @@ async function displayWithdrawEvents() {
     });
 }
 ```
+## Exercice 2 : le plus offrant
 
-### Test de sécurité
+Nous allons ajouter une nouvelle règle.
 
-Usurper l'identité de l'administrateur :
+Chaque modification de nom ne sera pas immédiatement validée. Elles seront enregistrées dans le smart contract sous forme de proposition.
 
-Sélectionner dans Metamask un compte autre que celui qui a déployé le contrat.
+L'administrateur aura accès à un bouton qui lui permettra de sélectionner parmi toutes les proposition celle qui lui rapporte le plus. Elle sera alors appliquée. Les propositions non acceptées seront remboursées.
 
-En console, récupérer l'adresse *owner* du contrat puis appeler la fonction *withdraw* avec cette adresse en paramètre.
+On affichera l'ensemble des propositions disponibles.
 
-```javascript
-web3.eth.getStorageAt("0x...",0,"latest").then( (v) => {console.log(v);} );
-```
-```javascript
-withdraw("0x...");
-```
+Un compte peut avoir une seule proposition en attente.
 
-Ca ne fonctionne pas, Metamask empêche d'utiliser les clés privés d'un compte qui n'est pas le compte en cours d'utilisation.
+Si deux propositions ont un prix équivalent, celle proposée en premier sera sélectionnée.
 
+Indications :
+* utiliser les **mappings** et **struct** de Solidity
+* [https://solidity.readthedocs.io/en/latest/](https://solidity.readthedocs.io/en/latest/)
 
+## Exercice 2 : solution
 
 ## Affaire à suivre ...
 
