@@ -16,6 +16,20 @@ A travers l'exemple d'un simple Hello World, nous allons également voir comment
 
 Nous découvrirons comment utiliser les événements, afin de tracer les modifications importantes.
 
+Ca sera également l'occasion de toucher à Solidity, le langage d'écriture des smart contract sur Ethereum.
+
+Documentation :
+* Solidity : https://solidity.readthedocs.io/en/latest/
+* Web3.js : https://web3js.readthedocs.io/en/v1.2.6/
+
+
+## Présentation du projet
+
+Nous allons exposer un fichier *index.html* via une application Node.js (*app.js*). L'utilisation du framework Web3.js impose de passer par un serveur web pour raisons de sécurité.
+
+Le fichier HTML se compose de plusieurs zones et champs.
+Des fonctions javascript seront définies dans le fichier *blockchain.js* pour interagir avec la bockchain et mettre à jour les affichages dans *index.html*.
+
 
 ## Déployer le smart contract
 
@@ -495,7 +509,7 @@ Ca ne fonctionne pas, Metamask empêche d'utiliser les clés privés d'un compte
 
 Il est possible de faire évoluer ce projet de multiples façons :
 
-1) Passer le projet côté serveur, avec Node.js par exemple, et le connecter à un noeud de blockchain local qui contiendra un portefeuille administré localement. 
-2) Gérer le déploiement des contrat avec un outil comme Truffle
-3) Ecrire des cas de test et les exécuter, toujours avec Truffle.
-4) Connect to a real blockchain (+epxliquer gestion du compte par defaut)
+* Passer le projet côté serveur en Node.js et le connecter à un noeud de blockchain local qui contiendra un portefeuille administré localement. 
+* Gérer le déploiement des contrat avec un outil comme Truffle
+* Ecrire des cas de test et les exécuter, toujours avec Truffle.
+* ...

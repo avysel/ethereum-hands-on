@@ -10,7 +10,7 @@ Basic example how to read and write data on Ethereum blockchain with Web3.js fra
 - **src/lib/web3.min.js** : the Web3.js framework, included in index.html
 - **src/blockchain.js** : function to interact with blockchain, included in index.html
 - **src/lib/hello-abi.js** : the smart contract interface, included in index.html
-- **src/index.js** : Nodejs file to serve index.html from a server (mandatory to use Web3)
+- **src/app.js** : Nodejs file to serve index.html from a server (mandatory to use Web3)
 
 - **PayableHello.sol** : v2 of the smart contract
 - **src/lib/payable-hello-abi.js** : the smart contract v2 interface, included in index.html
@@ -18,7 +18,7 @@ Basic example how to read and write data on Ethereum blockchain with Web3.js fra
 #### Miscellaneous
 
 - **docs/** : codelab files
-- **tools/truffle/** : truffle files to generate ABI and deploy contract
+- **tools/truffle/** : Truffle files to generate ABI and deploy contract
 - **tools/save.sh** : generate codelab from markdown file
 
 ## Prerequisite
