@@ -31,6 +31,19 @@
         <p>Nous allons voir comment connecter une application javascript à la blockchain Ethereum en utilisant le framework <em>web3.js</em>.</p>
 <p>A travers l&#39;exemple d&#39;un simple Hello World, nous allons également voir comment lire et écrire des données.</p>
 <p>Nous découvrirons comment utiliser les événements, afin de tracer les modifications importantes.</p>
+<p>Ca sera également l&#39;occasion de toucher à Solidity, le langage d&#39;écriture des smart contract sur Ethereum.</p>
+<p>Documentation :</p>
+<ul>
+<li>Solidity : https://solidity.readthedocs.io/en/latest/</li>
+<li>Web3.js : https://web3js.readthedocs.io/en/v1.2.6/</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Présentation du projet" duration="0">
+        <p>Nous allons exposer un fichier <em>index.html</em> via une application Node.js (<em>app.js</em>). L&#39;utilisation du framework Web3.js impose de passer par un serveur web pour raisons de sécurité.</p>
+<p>Le fichier HTML se compose de plusieurs zones et champs.<br>Des fonctions javascript seront définies dans le fichier <em>blockchain.js</em> pour interagir avec la bockchain et mettre à jour les affichages dans <em>index.html</em>.</p>
 
 
       </google-codelab-step>
@@ -458,7 +471,12 @@ async function withdraw(account) {
     
       <google-codelab-step label="Affaire à suivre ..." duration="0">
         <p>Il est possible de faire évoluer ce projet de multiples façons :</p>
-<p>1) Passer le projet côté serveur, avec Node.js par exemple, et le connecter à un noeud de blockchain local qui contiendra un portefeuille administré localement.<br>2) Gérer le déploiement des contrat avec un outil comme Truffle<br>3) Ecrire des cas de test et les exécuter, toujours avec Truffle.<br>4) Connect to a real blockchain (+epxliquer gestion du compte par defaut)</p>
+<ul>
+<li>Passer le projet côté serveur en Node.js et le connecter à un noeud de blockchain local qui contiendra un portefeuille administré localement.</li>
+<li>Gérer le déploiement des contrat avec un outil comme Truffle</li>
+<li>Ecrire des cas de test et les exécuter, toujours avec Truffle.</li>
+<li>...</li>
+</ul>
 
 
       </google-codelab-step>
