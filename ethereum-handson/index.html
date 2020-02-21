@@ -1,0 +1,466 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Ethereum Hands-on</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="ethereum-handson"
+                  title="Ethereum Hands-on"
+                  environment="web"
+                  feedback-link="https://github.com/avysel/ethereum-devoxx">
+    
+      <google-codelab-step label="Intro" duration="0">
+        <p>Nous allons voir comment connecter une application javascript à la blockchain Ethereum en utilisant le framework <em>web3.js</em>.</p>
+<p>A travers l&#39;exemple d&#39;un simple Hello World, nous allons également voir comment lire et écrire des données.</p>
+<p>Nous découvrirons comment utiliser les événements, afin de tracer les modifications importantes.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Déployer le smart contract" duration="0">
+        <pre><code>pragma solidity ^0.5.0;
+
+contract Hello {
+
+    string private name;
+    
+    event NameChanged(string newName);
+    
+    constructor() public {
+        name = &#34;nobody&#34;;
+    }
+    
+    function setName(string memory newName) public {
+        name = newName;
+        emit NameChanged(newName);
+    }
+    
+    function getName() public view returns (string memory) {
+        return name;
+    }
+}
+</code></pre>
+<p>Déployer le smart contract avec Remix, Truffle ...</p>
+<p>Mettre à jour la configuration avec l&#39;adresse du smart contract dans <em>blockchain.js</em></p>
+<pre><code>// address of smart contract
+const contractAddress = &#34;0x...;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Connexion à la blockchain" duration="0">
+        <pre><code>/**
+* Create a Web3 object to connect to blockchain
+*/
+async function initWeb3() {
+	// Modern dapp browsers...
+	if (window.ethereum) {
+		ethereum.autoRefreshOnNetworkChange = true;
+		window.web3 = new Web3(ethereum);
+		try {
+			// Request account access if needed
+			await ethereum.enable();
+			console.log(&#34;Ethereum enabled with account : &#34;+ethereum.selectedAddress);
+		} catch (error) {
+			console.error(&#34;Access denied for metamask by user&#34;);
+		}
+	}
+	// Legacy dapp browsers...
+	else if (window.web3) {
+		window.web3 = new Web3(web3.currentProvider);
+	}
+	// Non-dapp browsers...
+	else {
+		console.log(&#39;Non-Ethereum browser detected. You should consider trying MetaMask!&#39;);
+	}
+
+	console.log(&#34;web3 : &#34;+web3.version);
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Connexion au smart contract" duration="0">
+        <p>Nous allons interagir avec le smart contract via l&#39;objet suivant :</p>
+<pre><code>// contract global object
+var helloContract;
+</code></pre>
+<p>Il est initialisé de cette façon :</p>
+<pre><code>/**
+* Init the contract object
+*/
+function initContract() {
+	console.log(&#34;Load contract at : &#34;+contractAddress);
+	try {
+		helloContract =  new web3.eth.Contract(helloABI, contractAddress);
+	}
+	catch(error) {
+		console.error(&#34;Error loading contract : &#34;+error);
+	}
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Afficher les informations de la blockchain" duration="0">
+        <pre><code>/**
+* Retrieve and basic info from blockchain node
+*/
+async function displayBlockchainInfo() {
+	$(&#39;#nodeInfo&#39;).text(await web3.eth.getNodeInfo());
+	$(&#39;#blockNumber&#39;).text(await web3.eth.getBlockNumber());
+
+	web3.eth.getAccounts()
+	.then( async (accounts) =&gt; {
+
+		let account = accounts[0];
+		console.log(&#34;Account : &#34;+account);
+		$(&#39;#account&#39;).text(account);
+
+		let balance = await web3.eth.getBalance(account);
+		let balanceInEth = web3.utils.fromWei(balance);
+		console.log(&#34;Balance : &#34;+balanceInEth);
+		$(&#39;#balance&#39;).text(balanceInEth);
+	})
+	.catch( (error) =&gt; {
+		console.error(&#34;Error getting accounts : &#34;+error);
+	});
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Récupérer le nom" duration="0">
+        <pre><code>/**
+* Read and display &#34;name&#34; from blockchain
+*/
+async function displayName() {
+	helloContract.methods.getName().call()
+	.then( (name) =&gt; {
+			$(&#39;#name&#39;).text(&#34;Hello &#34;+name);
+		}
+	)
+	.catch( (error) =&gt; {
+		console.error(&#34;Error reading name : &#34;+error);
+	});
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Modifier le nom" duration="0">
+        <pre><code>/**
+* Create a transaction to udpate the name in the smart contract
+* @param newName : the new name to set
+* @param account : the account that will create the transaction
+*/
+async function setName(newName, account) {
+	console.log(&#34;Set new name : &#34;+newName);
+
+	// first, estimate gas cost
+	helloContract.methods.setName(newName).estimateGas({from: account})
+	.then( (gasAmount) =&gt; {
+
+		console.log(&#34;Estimated gas : &#34;+gasAmount);
+
+		// then, send a transaction to setName using previously estimated gas amount
+		helloContract.methods.setName(newName).send({from: account, gas: gasAmount})
+		.on(&#39;transactionHash&#39;, (hash) =&gt; {
+			console.log(&#34;Tx created &#34;+hash);
+			$(&#39;#txLink&#39;).html(&#34;&lt;a target=&#39;_blank&#39; href=&#39;https://ropsten.etherscan.io/tx/&#34;+hash+&#34;&#39;&gt;&#34;+hash+&#34;&lt;/a&gt;&#34;);
+		})
+		.on(&#39;receipt&#39;, (receipt) =&gt; {
+			console.log(&#34;Tx confirmed in block &#34;+receipt.blockNumber);
+			displayName();
+			displayBlockchainInfo();
+			stopWaiting();
+		})
+		.on(&#39;confirmation&#39;, (confirmationNumber, receipt) =&gt; {
+			//console.log(&#34;confirmation &#34;+confirmationNumber);
+		})
+		.on(&#39;error&#39;,(error) =&gt; {
+			console.error(&#34;Error : &#34;+error);
+			stopWaiting();
+		});
+
+	})
+	.catch(console.error);
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Récupérer les événements" duration="0">
+        <pre><code>/**
+* Read and display smart contract events
+*/
+async function displayEvents() {
+
+	// get all emited events from first block to last block
+	helloContract.getPastEvents(&#34;NameChanged&#34;, { fromBlock: 0, toBlock: &#39;latest&#39; })
+	.then((events, error) =&gt; {
+		let htmlEvents = &#34;&lt;ul&gt;&#34;;
+		events.forEach(function(item, index, array) {
+			htmlEvents+= (&#34;&lt;li&gt;&lt;b&gt;&#34;+item.returnValues.newName+&#34;&lt;/b&gt; (&#34;+item.blockNumber+&#34;)&lt;/li&gt;&#34;);
+		});
+		htmlEvents += &#34;&lt;/ul&gt;&#34;;
+ 		$(&#39;#events&#39;).html(htmlEvents);
+	});
+}
+
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Champs privé ? Vraiment ?" duration="0">
+        <p>Avez-vous remarqué dans le smart contract la présence d&#39;un champ privé ?</p>
+<pre><code>string private name;
+</code></pre>
+<p>Essayez-donc ceci dans la console javascript du navigateur :</p>
+<pre><code>web3.eth.getStorageAt(&#34;&lt;contract address&gt;&#34;,0,&#34;latest&#34;)
+.then( (v) =&gt; {console.log(web3.utils.toAscii(v));} );
+</code></pre>
+<p>Surprise :)</p>
+<p>Le mot clé <em>private</em> permet seulement d&#39;empêcher un smart contract d&#39;accéder à certains champs d&#39;un autre smart contract.<br>Physiquement, la donnée reste stockée dans une zone mémoire dont l&#39;accès est permis en dehors de tout smart contract.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Renddre la modification du nom payante" duration="0">
+        <h2 is-upgraded>Nouveau smart contract</h2>
+<p>Regardez le nouveau smart contract : PayableHello.</p>
+<p>Il est construit sur la même base que le précédent mais il ajoute une dimension payante.</p>
+<p>Il demande à l&#39;utilisateur d&#39;envoyer au moins 2 ETH pour pouvoir modifier le nom.<br>Il va également permette à son créateur de récupérer les sommes envoyées par les utilisateurs.</p>
+<pre><code>pragma solidity ^0.5.0;
+
+contract PayableHello is owned {
+
+    string private name;
+
+    event NameChanged(string newName, address userAddress, uint value);
+    event Withdraw(address ownerAddress, uint balance);
+
+    constructor() public {
+        name = &#34;nobody&#34;;
+    }
+
+    function setName(string memory newName) public payable {
+    	require(msg.value &gt;= 2 ether, &#34;Pay 2 ETH or more&#34;);
+        name = newName;
+        emit NameChanged(newName, msg.sender, msg.value);
+    }
+
+    function getName() public view returns (string memory) {
+        return name;
+    }
+
+    function withdraw() public onlyOwner {
+    	uint balance = address(this).balance;
+		msg.sender.transfer(balance);
+		emit Withdraw(msg.sender, balance);
+    }
+
+    function() external payable {
+        revert();
+    }
+
+}
+</code></pre>
+<h2 is-upgraded>Ajout du champ &#34;prix&#34; au formulaire</h2>
+<p>Dans <em>index.html</em> :</p>
+<pre><code>&lt;div class=&#34;form-group&#34;&gt;
+    &lt;input type=&#34;text&#34; class=&#34;form-control&#34; id=&#34;price&#34; placeholder=&#34;Price&#34;&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Et passer cette valeur à l&#39;appel à setName :</p>
+<pre><code>function updateName() {
+    startWaiting();
+    setName( $(&#39;#newName&#39;).val(), ethereum.selectedAddress, $(&#39;#price&#39;).val() );
+    $(&#39;#newName&#39;).val(&#39;&#39;);
+    $(&#39;#price&#39;).val(&#39;&#39;);
+}
+</code></pre>
+<h2 is-upgraded>Envoi de la somme demandée</h2>
+<p>Mise à jour de <em>setName</em> :</p>
+<pre><code>/**
+* Create a transaction to udpate the name in the smart contract
+* @param newName : the new name to set
+* @param account : the account that will create the transaction
+*/
+async function setName(newName, account, price) {
+	console.log(&#34;Set new name : &#34;+newName+&#34; for &#34;+price+&#34; ETH.&#34;);
+
+	// first, estimate gas cost
+	helloContract.methods.setName(newName).estimateGas({from: account, value: web3.utils.toWei(price, &#34;ether&#34;)})
+	.then( (gasAmount) =&gt; {
+
+		console.log(&#34;Estimated gas : &#34;+gasAmount);
+
+		// then, send a transaction to setName using previously estimated gas amount
+		helloContract.methods.setName(newName).send({from: account, gas: gasAmount, value: web3.utils.toWei(price, &#34;ether&#34;)})
+		.on(&#39;transactionHash&#39;, (hash) =&gt; {
+			console.log(&#34;Tx created &#34;+hash);
+			$(&#39;#txLink&#39;).html(&#34;&lt;a target=&#39;_blank&#39; href=&#39;https://ropsten.etherscan.io/tx/&#34;+hash+&#34;&#39;&gt;&#34;+hash+&#34;&lt;/a&gt;&#34;);
+		})
+		.on(&#39;receipt&#39;, (receipt) =&gt; {
+			console.log(&#34;Tx confirmed in block &#34;+receipt.blockNumber);
+			displayName();
+			displayBlockchainInfo();
+			displayEvents();
+			stopWaiting();
+		})
+		.on(&#39;confirmation&#39;, (confirmationNumber, receipt) =&gt; {
+			//console.log(&#34;confirmation &#34;+confirmationNumber);
+		})
+		.on(&#39;error&#39;,(error) =&gt; {
+			console.error(&#34;Error : &#34;+error);
+			stopWaiting();
+		});
+
+	})
+	.catch(console.error);
+}
+</code></pre>
+<h2 is-upgraded>Afficher la balance du contrat</h2>
+<p>Ajouter un champ dans les informations de la blockchain :</p>
+<pre><code>&lt;br/&gt;
+Contract balance : &lt;span id=&#34;contractBalance&#34;&gt;&lt;/span&gt; ETH
+</code></pre>
+<p>Dans <em>displayBlockchainInfo</em>, remplir ce champa avec la balance du contrat :</p>
+<pre><code>$(&#39;#contractBalance&#39;).text(web3.utils.fromWei(await web3.eth.getBalance(contractAddress)));
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gérer le retrait" duration="0">
+        <p>Nouveau contrat : owned.</p>
+<p>Ce contrat permet de garder en mémoire l&#39;adresse utilisée pour déployer le contrat et de la considérer comme celle de l&#39;administrateur.</p>
+<p>Il définit un <em>modifier</em> que l&#39;on va appliquer à toutes les fonctions de notre contrat PayableHello accessibles uniquement par l&#39;administrateur.</p>
+<p>Il vérifie que l&#39;appel à une fonction est effectué depuis la même adresse que celle de l&#39;administrateur.</p>
+<p>Enfin, il permet à l&#39;admnistrateur de détruire le contrat.</p>
+<pre><code>pragma solidity ^0.5.0;
+
+contract owned {
+	address payable owner;
+
+	// Contract constructor: set owner
+	constructor() public {
+		owner = msg.sender;
+	}
+
+	// Access control modifier
+	modifier onlyOwner {
+	    require(msg.sender == owner, &#34;Only the contract owner can call this function&#34;);
+	    _;
+	}
+
+	// Contract destructor
+	function destroy() public onlyOwner {
+		selfdestruct(owner);
+	}
+
+}
+</code></pre>
+<p>Il ne reste qu&#39;à défini <em>PayableHello</em> comme héritant de <em>owned</em> afin de bénéficier de ces fonctionnalités.</p>
+<pre><code>contract PayableHello is owned
+</code></pre>
+<h2 is-upgraded>Ajouter un bouton de retrait</h2>
+<p>Ajouter le bouton :</p>
+<pre><code>&lt;button type=&#34;button&#34; class=&#34;btn btn-primary&#34; onclick=&#34;javascript:callWithdraw()&#34;&gt;Withdraw&lt;/button&gt;
+</code></pre>
+<p>Et la fonction pour lancer le retrait :</p>
+<pre><code>/**
+* Call the withdraw function
+*/
+function startWithdraw() {
+    startWaiting();
+    withdraw(ethereum.selectedAddress);
+}
+</code></pre>
+<h2 is-upgraded>Gérer le retrait</h2>
+<pre><code>/**
+* Retreive contract balance. Only works for contract owner
+* withdrawAccount : the address to send ethers to
+*/
+async function withdraw(account) {
+
+	console.log(&#34;&gt; call withdraw with &#34;+account);
+
+	helloContract.methods.withdraw().estimateGas({from: account})
+	.then( (gasAmount) =&gt; {
+
+		console.log(&#34;Estimated gas : &#34;+gasAmount);
+
+		// then, send a transaction to setName using previously estimated gas amount
+		helloContract.methods.withdraw().send({from: account, gas: gasAmount})
+		.on(&#39;transactionHash&#39;, (hash) =&gt; {
+			console.log(&#34;Tx created &#34;+hash);
+			$(&#39;#txLink&#39;).html(&#34;&lt;a target=&#39;_blank&#39; href=&#39;https://ropsten.etherscan.io/tx/&#34;+hash+&#34;&#39;&gt;&#34;+hash+&#34;&lt;/a&gt;&#34;);
+		})
+		.on(&#39;receipt&#39;, (receipt) =&gt; {
+			console.log(&#34;Tx confirmed in block &#34;+receipt.blockNumber);
+			displayName();
+			displayBlockchainInfo();
+			displayEvents();
+			stopWaiting();
+		})
+		.on(&#39;confirmation&#39;, (confirmationNumber, receipt) =&gt; {
+			//console.log(&#34;confirmation &#34;+confirmationNumber);
+		})
+		.on(&#39;error&#39;,(error) =&gt; {
+			console.error(&#34;Error : &#34;+error);
+			stopWaiting();
+		});
+
+	})
+	.catch(console.error);
+
+}
+</code></pre>
+<h2 is-upgraded>Attention : faille de sécurité</h2>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Affaire à suivre ..." duration="0">
+        <p>Il est possible de faire évoluer ce projet de multiples façons :</p>
+<p>1) Passer le projet côté serveur, avec Node.js par exemple, et le connecter à un noeud de blockchain local qui contiendra un portefeuille administré localement.<br>2) Gérer le déploiement des contrat avec un outil comme Truffle<br>3) Ecrire des cas de test et les exécuter, toujours avec Truffle.<br>4) Connect to a real blockchain (+epxliquer gestion du compte par defaut)</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
