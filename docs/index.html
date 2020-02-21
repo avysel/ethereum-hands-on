@@ -456,6 +456,15 @@ async function withdraw(account) {
 
 }
 </code></pre>
+<h2 is-upgraded>Test de sécurité</h2>
+<p>Usurper l&#39;identité de l&#39;administrateur :</p>
+<p>Sélectionner dans Metamask un compte autre que celui qui a déployé le contrat.</p>
+<p>En console, récupérer l&#39;adresse <em>owner</em> du contrat puis appeler la fonction <em>withdraw</em> avec cette adresse en paramètre.</p>
+<pre><code>web3.eth.getStorageAt(&#34;0x...&#34;,0,&#34;latest&#34;).then( (v) =&gt; {console.log(v);} );
+</code></pre>
+<pre><code>withdraw(&#34;0x...&#34;);
+</code></pre>
+<p>Ca ne fonctionne pas, Metamask empêche d&#39;utiliser les clés privés d&#39;un compte qui n&#39;est pas le compte en cours d&#39;utilisation.</p>
 
 
       </google-codelab-step>
@@ -466,7 +475,7 @@ async function withdraw(account) {
 
       </google-codelab-step>
     
-      <google-codelab-step label="Exercice 2 : solution" duration="0">
+      <google-codelab-step label="Exercice 1 : solution" duration="0">
         <p>Dans <strong>index.html</strong>, ajouter une zone :</p>
 <pre><code>&lt;div class=&#34;row&#34;&gt;
     &lt;div class=&#34;col-md-12&#34;&gt;
@@ -497,16 +506,28 @@ async function displayWithdrawEvents() {
     });
 }
 </code></pre>
-<h2 is-upgraded>Test de sécurité</h2>
-<p>Usurper l&#39;identité de l&#39;administrateur :</p>
-<p>Sélectionner dans Metamask un compte autre que celui qui a déployé le contrat.</p>
-<p>En console, récupérer l&#39;adresse <em>owner</em> du contrat puis appeler la fonction <em>withdraw</em> avec cette adresse en paramètre.</p>
-<pre><code>web3.eth.getStorageAt(&#34;0x...&#34;,0,&#34;latest&#34;).then( (v) =&gt; {console.log(v);} );
-</code></pre>
-<pre><code>withdraw(&#34;0x...&#34;);
-</code></pre>
-<p>Ca ne fonctionne pas, Metamask empêche d&#39;utiliser les clés privés d&#39;un compte qui n&#39;est pas le compte en cours d&#39;utilisation.</p>
 
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Exercice 2 : le plus offrant" duration="0">
+        <p>Nous allons ajouter une nouvelle règle.</p>
+<p>Chaque modification de nom ne sera pas immédiatement validée. Elles seront enregistrées dans le smart contract sous forme de proposition.</p>
+<p>L&#39;administrateur aura accès à un bouton qui lui permettra de sélectionner parmi toutes les proposition celle qui lui rapporte le plus. Elle sera alors appliquée. Les propositions non acceptées seront remboursées.</p>
+<p>On affichera l&#39;ensemble des propositions disponibles.</p>
+<p>Un compte peut avoir une seule proposition en attente.</p>
+<p>Si deux propositions ont un prix équivalent, celle proposée en premier sera sélectionnée.</p>
+<p>Indications :</p>
+<ul>
+<li>utiliser les <strong>mappings</strong> et <strong>struct</strong> de Solidity</li>
+<li><a href="https://solidity.readthedocs.io/en/latest/" target="_blank">https://solidity.readthedocs.io/en/latest/</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Exercice 2 : solution" duration="0">
+        
 
       </google-codelab-step>
     
