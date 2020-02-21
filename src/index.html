@@ -37,9 +37,7 @@
 			initContract();
 
 			/* Display data read from blockchain */
-			displayBlockchainInfo();
-			displayName();
-			displayEvents();
+			displayAll();
         });
 
 		/**
@@ -152,7 +150,16 @@
 				</div>
 			</div>
 		</div>
-
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<h5 class="card-header">Withdraws</h5>
+					<div class="card-body">
+						<div id="withdraw-events"></div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </body>

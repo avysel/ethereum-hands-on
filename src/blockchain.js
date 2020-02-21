@@ -5,6 +5,13 @@ const contractAddress = "0x36e80547B55baa2a7442C23714e3529c1148aE93";
 // contract global object
 var helloContract;
 
+function displayAll() {
+	displayBlockchainInfo();
+	displayName();
+	displayEvents();
+	displayWithdrawEvents();
+}
+
 /**
 * Create a Web3 object to connect to blockchain
 */
@@ -111,9 +118,7 @@ async function displayName() {
 		})
 		.on('receipt', (receipt) => {
 			console.log("Tx confirmed in block "+receipt.blockNumber);
-			displayName();
-			displayBlockchainInfo();
-			displayEvents();
+			displayAll();
 			stopWaiting();
 		})
 		.on('confirmation', (confirmationNumber, receipt) => {
@@ -153,9 +158,7 @@ async function setName(newName, account, price) {
 		})
 		.on('receipt', (receipt) => {
 			console.log("Tx confirmed in block "+receipt.blockNumber);
-			displayName();
-			displayBlockchainInfo();
-			displayEvents();
+			displayAll();
 			stopWaiting();
 		})
 		.on('confirmation', (confirmationNumber, receipt) => {
@@ -224,5 +227,21 @@ async function withdraw(account) {
 
 	})
 	.catch((error) => {console.error(error); stopWaiting(); });
+}
 
+/**
+* Read and display smart contract withdraw events
+*/
+async function displayWithdrawEvents() {
+
+	// get all emited events from first block to last block
+	helloContract.getPastEvents("Withdraw", { fromBlock: 0, toBlock: 'latest' })
+	.then((events, error) => {
+		let htmlEvents = "<ul>";
+		events.forEach(function(item, index, array) {
+			htmlEvents+= ("<li>"+item.returnValues.ownerAddress+" : "+web3.utils.fromWei(item.returnValues.balance)+" ("+item.blockNumber+")</li>");
+		});
+		htmlEvents += "</ul>";
+        $('#withdraw-events').html(htmlEvents);
+	});
 }

@@ -19,8 +19,8 @@ Nous découvrirons comment utiliser les événements, afin de tracer les modific
 Ca sera également l'occasion de toucher à Solidity, le langage d'écriture des smart contract sur Ethereum.
 
 Documentation :
-* Solidity : https://solidity.readthedocs.io/en/latest/
-* Web3.js : https://web3js.readthedocs.io/en/v1.2.6/
+* Solidity : [https://solidity.readthedocs.io/en/latest/](https://solidity.readthedocs.io/en/latest/)
+* Web3.js : [https://web3js.readthedocs.io/en/v1.2.6/](https://web3js.readthedocs.io/en/v1.2.6/)
 
 
 ## Présentation du projet
@@ -253,7 +253,7 @@ Le mot clé *private* permet seulement d'empêcher un smart contract d'accéder 
 Physiquement, la donnée reste stockée dans une zone mémoire dont l'accès est permis en dehors de tout smart contract.
 
 
-## Renddre la modification du nom payante
+## Rendre la modification du nom payante
 
 ### Nouveau smart contract
 Regardez le nouveau smart contract : PayableHello.
@@ -417,7 +417,7 @@ contract owned {
 }
 ```
 
-Il ne reste qu'à défini *PayableHello* comme héritant de *owned* afin de bénéficier de ces fonctionnalités.
+Il ne reste qu'à définir *PayableHello* comme héritant de *owned* afin de bénéficier de ces fonctionnalités.
 
 ```solidity
 contract PayableHello is owned
@@ -485,6 +485,49 @@ async function withdraw(account) {
 
 }
 ```
+
+### Exercice : afficher les événements de retrait
+
+Sur le même modèle que pour les événements NameChanged, afficher les événement Withdraw.
+
+### Exercice : solution
+
+Dans **index.html**, ajouter une zone :
+
+```html
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <h5 class="card-header">Withdraws</h5>
+            <div class="card-body">
+                <div id="withdraw-events"></div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+Dans **blockchain.js**, créer une fonction qui récupère les événements et les affiche :
+
+```javascript
+/**
+* Read and display smart contract withdraw events
+*/
+async function displayWithdrawEvents() {
+
+	// get all emited events from first block to last block
+	helloContract.getPastEvents("Withdraw", { fromBlock: 0, toBlock: 'latest' })
+	.then((events, error) => {
+		let htmlEvents = "<ul>";
+		events.forEach(function(item, index, array) {
+			htmlEvents+= ("<li>"+item.returnValues.ownerAddress+" : "+web3.utils.fromWei(item.returnValues.balance)+" ("+item.blockNumber+")</li>");
+		});
+		htmlEvents += "</ul>";
+        $('#withdraw-events').html(htmlEvents);
+	});
+}
+```
+
+
 
 ### Test de sécurité
 

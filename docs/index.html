@@ -34,8 +34,8 @@
 <p>Ca sera également l&#39;occasion de toucher à Solidity, le langage d&#39;écriture des smart contract sur Ethereum.</p>
 <p>Documentation :</p>
 <ul>
-<li>Solidity : https://solidity.readthedocs.io/en/latest/</li>
-<li>Web3.js : https://web3js.readthedocs.io/en/v1.2.6/</li>
+<li>Solidity : <a href="https://solidity.readthedocs.io/en/latest/" target="_blank">https://solidity.readthedocs.io/en/latest/</a></li>
+<li>Web3.js : <a href="https://web3js.readthedocs.io/en/v1.2.6/" target="_blank">https://web3js.readthedocs.io/en/v1.2.6/</a></li>
 </ul>
 
 
@@ -264,7 +264,7 @@ async function displayEvents() {
 
       </google-codelab-step>
     
-      <google-codelab-step label="Renddre la modification du nom payante" duration="0">
+      <google-codelab-step label="Rendre la modification du nom payante" duration="0">
         <h2 is-upgraded>Nouveau smart contract</h2>
 <p>Regardez le nouveau smart contract : PayableHello.</p>
 <p>Il est construit sur la même base que le précédent mais il ajoute une dimension payante.</p>
@@ -400,7 +400,7 @@ contract owned {
 
 }
 </code></pre>
-<p>Il ne reste qu&#39;à défini <em>PayableHello</em> comme héritant de <em>owned</em> afin de bénéficier de ces fonctionnalités.</p>
+<p>Il ne reste qu&#39;à définir <em>PayableHello</em> comme héritant de <em>owned</em> afin de bénéficier de ces fonctionnalités.</p>
 <pre><code>contract PayableHello is owned
 </code></pre>
 <h2 is-upgraded>Ajouter un bouton de retrait</h2>
@@ -454,6 +454,39 @@ async function withdraw(account) {
 	})
 	.catch(console.error);
 
+}
+</code></pre>
+<h2 is-upgraded>Exercice : afficher les événements de retrait</h2>
+<p>Sur le même modèle que pour les événements NameChanged, afficher les événement Withdraw.</p>
+<h2 is-upgraded>Exercice : solution</h2>
+<p>Dans <strong>index.html</strong>, ajouter une zone :</p>
+<pre><code>&lt;div class=&#34;row&#34;&gt;
+    &lt;div class=&#34;col-md-12&#34;&gt;
+        &lt;div class=&#34;card&#34;&gt;
+            &lt;h5 class=&#34;card-header&#34;&gt;Withdraws&lt;/h5&gt;
+            &lt;div class=&#34;card-body&#34;&gt;
+                &lt;div id=&#34;withdraw-events&#34;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<p>Dans <strong>blockchain.js</strong>, créer une fonction qui récupère les événements et les affiche :</p>
+<pre><code>/**
+* Read and display smart contract withdraw events
+*/
+async function displayWithdrawEvents() {
+
+	// get all emited events from first block to last block
+	helloContract.getPastEvents(&#34;Withdraw&#34;, { fromBlock: 0, toBlock: &#39;latest&#39; })
+	.then((events, error) =&gt; {
+		let htmlEvents = &#34;&lt;ul&gt;&#34;;
+		events.forEach(function(item, index, array) {
+			htmlEvents+= (&#34;&lt;li&gt;&#34;+item.returnValues.ownerAddress+&#34; : &#34;+web3.utils.fromWei(item.returnValues.balance)+&#34; (&#34;+item.blockNumber+&#34;)&lt;/li&gt;&#34;);
+		});
+		htmlEvents += &#34;&lt;/ul&gt;&#34;;
+        $(&#39;#withdraw-events&#39;).html(htmlEvents);
+	});
 }
 </code></pre>
 <h2 is-upgraded>Test de sécurité</h2>
