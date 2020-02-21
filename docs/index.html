@@ -443,7 +443,15 @@ async function withdraw(account) {
 
 }
 </code></pre>
-<h2 is-upgraded>Attention : faille de sécurité</h2>
+<h2 is-upgraded>Test de sécurité</h2>
+<p>Usurper l&#39;identité de l&#39;administrateur :</p>
+<p>Sélectionner dans Metamask un compte autre que celui qui a déployé le contrat.</p>
+<p>En console, récupérer l&#39;adresse <em>owner</em> du contrat puis appeler la fonction <em>withdraw</em> avec cette adresse en paramètre.</p>
+<pre><code>web3.eth.getStorageAt(&#34;0x...&#34;,0,&#34;latest&#34;).then( (v) =&gt; {console.log(v);} );
+</code></pre>
+<pre><code>withdraw(&#34;0x...&#34;);
+</code></pre>
+<p>Ca ne fonctionne pas, Metamask empêche d&#39;utiliser les clés privés d&#39;un compte qui n&#39;est pas le compte en cours d&#39;utilisation.</p>
 
 
       </google-codelab-step>
