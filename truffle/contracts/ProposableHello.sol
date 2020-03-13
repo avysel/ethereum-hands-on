@@ -80,6 +80,7 @@ contract ProposableHello is Ownable {
 
             delete proposals[proposers[i]];
             delete proposers[i];
+            proposers.length=0;
         }
 
         // change value

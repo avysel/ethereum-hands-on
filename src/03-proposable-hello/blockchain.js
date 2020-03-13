@@ -1,6 +1,6 @@
 
 // address of smart contract
-const contractAddress = "0x91717D082F621D6b023E385d4Fa4DF52336FA970";
+const contractAddress = "0xe7dC0e129C16cFa2ed2CcbF5Cbee526e2d5D3218";
 
 // contract global object
 var helloContract;
@@ -209,10 +209,16 @@ async function displayWithdrawEvents() {
 * Read and display smart contract withdraw events
 */
 async function displayProposals() {
-
+	console.log("Call displayProposals");
 	helloContract.methods.getProposals().call()
 	.then( (proposals) => {
 			console.log(proposals);
+			let htmlProposals = "<ul>";
+			proposals.forEach(function(item, index, array) {
+				htmlProposals += "<li>"+item.sender+", "+item.name+", "+web3.utils.fromWei(item.value)+"</li>";
+			});
+			htmlProposals += "</ul>";
+			$('#proposals').html(htmlProposals);
 		}
 	)
 	.catch( (error) => {
