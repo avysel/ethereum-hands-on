@@ -25,6 +25,12 @@ var proposableHelloABI =   [
                                      "internalType": "uint256",
                                      "name": "price",
                                      "type": "uint256"
+                                   },
+                                   {
+                                     "indexed": false,
+                                     "internalType": "uint256",
+                                     "name": "time",
+                                     "type": "uint256"
                                    }
                                  ],
                                  "name": "CreateProposal",
@@ -150,7 +156,7 @@ var proposableHelloABI =   [
                                  "inputs": [
                                    {
                                      "internalType": "string",
-                                     "name": "newName",
+                                     "name": "_newName",
                                      "type": "string"
                                    }
                                  ],
@@ -189,7 +195,7 @@ var proposableHelloABI =   [
                                  "inputs": [
                                    {
                                      "internalType": "string",
-                                     "name": "newName",
+                                     "name": "_newName",
                                      "type": "string"
                                    }
                                  ],

@@ -1,21 +1,21 @@
-pragma solidity ^0.5.16;
+pragma solidity ^0.5.0;
 
 contract Hello {
 
-    string private name;
+    bytes32 private name;
 
-    event NameChanged(string newName);
+    event NameChanged(bytes32 newName);
 
     constructor() public {
         name = "nobody";
     }
 
-    function setName(string memory newName) public {
-        name = newName;
-        emit NameChanged(newName);
+    function setName(bytes32 _newName) public {
+        name = _newName;
+        emit NameChanged(_newName);
     }
 
-    function getName() public view returns (string memory) {
+    function getName() public view returns (bytes32) {
         return name;
     }
 }

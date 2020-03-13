@@ -6,9 +6,10 @@ contract ProposableHello is Ownable {
 
     string private name;
 
+
     event NameChanged(string newName, address userAddress, uint value);
     event Withdraw(address ownerAddress, uint balance);
-    event CreateProposal(string newName, address sender, uint price);
+    event CreateProposal(string newName, address sender, uint price, uint time);
 
     struct Proposal {
         address payable sender;
@@ -25,10 +26,10 @@ contract ProposableHello is Ownable {
         name = "nobody";
     }
 
-    function setName(string memory newName) public payable {
+    function setName(string memory _newName) public payable {
         require(msg.value >= 2 ether, "Pay 2 ETH or more");
-        name = newName;
-        emit NameChanged(newName, msg.sender, msg.value);
+        name = _newName;
+        emit NameChanged(_newName, msg.sender, msg.value);
     }
 
     function getName() public view returns (string memory) {
@@ -45,11 +46,11 @@ contract ProposableHello is Ownable {
         revert();
     }
 
-    function createProposal(string memory newName) public payable {
+    function createProposal(string memory _newName) public payable {
         require(msg.value >= 2 ether, "Pay 2 ETH or more");
         proposers.push(msg.sender);
-        proposals[msg.sender] = Proposal(msg.sender, newName, msg.value, now);
-        emit CreateProposal(newName, msg.sender, msg.value);
+        proposals[msg.sender] = Proposal(msg.sender, _newName, msg.value, now);
+        emit CreateProposal(_newName, msg.sender, msg.value, now);
     }
 
     function selectBestProposal() public onlyOwner {

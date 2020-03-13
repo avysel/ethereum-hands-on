@@ -13,10 +13,10 @@ contract PayableHello is Ownable {
         name = "nobody";
     }
 
-    function setName(string memory newName) public payable {
+    function setName(string memory _newName) public payable {
         require(msg.value >= 2 ether, "Pay 2 ETH or more");
-        name = newName;
-        emit NameChanged(newName, msg.sender, msg.value);
+        name = _newName;
+        emit NameChanged(_newName, msg.sender, msg.value);
     }
 
     function getName() public view returns (string memory) {

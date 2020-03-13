@@ -68,7 +68,7 @@ var payableHelloABI =   [
                               "inputs": [
                                 {
                                   "internalType": "string",
-                                  "name": "newName",
+                                  "name": "_newName",
                                   "type": "string"
                                 }
                               ],
