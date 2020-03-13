@@ -91,8 +91,9 @@ contract ProposableHello is Ownable {
     function getProposals() external view returns(Proposal[] memory) {
         Proposal[] memory result = new Proposal[](proposers.length);
 
-        for (uint i=1; i<proposers.length; i++) {
-            result[i] = proposals[proposers[i]];
+        for (uint i=0; i<proposers.length; i++) {
+            Proposal storage p = proposals[proposers[i]];
+            result[i] = p ;
         }
 
         return result;

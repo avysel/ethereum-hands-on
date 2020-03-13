@@ -2541,12 +2541,12 @@
         }
       },
       "links": {},
-      "address": "0xCc78D34068382a5D72A8d4BAF852F60aB06a6fD8",
-      "transactionHash": "0x269445523162a3d75719a0289277822886422970ae0a2fe70c3b5f2cdfc4f111"
+      "address": "0xE22062152d0d08f1E7CD481a563cAC9780f726cB",
+      "transactionHash": "0xd0b1a1e1cdff369bb247f5d5ea58608afb419c387cbba25767035771089ef7e7"
     }
   },
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-03-13T14:30:53.788Z",
+  "updatedAt": "2020-03-13T14:40:17.576Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
