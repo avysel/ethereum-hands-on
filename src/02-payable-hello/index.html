@@ -11,10 +11,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/babel-polyfill/dist/polyfill.min.js"></script>
 
 	<!-- blockchain framework -->
-	<script type="text/javascript" src="./lib/web3.min.js"></script>
+	<script type="text/javascript" src="../lib/web3.min.js"></script>
 
 	<!-- smart contract interface -->
-	<script type="text/javascript" src="./lib/payable-hello-abi.js"></script>
+	<script type="text/javascript" src="./payable-hello-abi.js"></script>
 
 	<!-- blockchain scripts -->
 	<script type="text/javascript" src="./blockchain.js"></script>
@@ -37,9 +37,7 @@
 			initContract();
 
 			/* Display data read from blockchain */
-			displayBlockchainInfo();
-			displayName();
-			displayEvents();
+			displayAll();
         });
 
 		/**
@@ -52,6 +50,14 @@
         	$('#newName').val('');
         	$('#price').val('');
         }
+
+		/**
+		* Call the withdraw function
+		*/
+		function startWithdraw() {
+			startWaiting();
+			withdraw(ethereum.selectedAddress);
+		}
 
 		/**
 		* Start spinner
@@ -82,6 +88,10 @@
 						Account : <span id="account"></span>
 						<br/>
 						Account balance : <span id="balance"></span> ETH
+						<br/>
+						Contract balance : <span id="contractBalance"></span> ETH
+						<hr/>
+						<button type="button" class="btn btn-primary" onclick="javascript:startWithdraw()">Withdraw</button>
 					</div>
 				</div>
 			</div>
@@ -111,6 +121,9 @@
 							<div class="form-group">
 								<input type="text" class="form-control" id="newName" placeholder="New name">
 							</div>
+							<div class="form-group">
+								<input type="text" class="form-control" id="price" placeholder="price">
+							</div>
 							<button type="submit" class="btn btn-primary">Submit</button>
 						</form>
 						<div class="d-flex justify-content-center">
@@ -138,6 +151,18 @@
 			</div>
 		</div>
 
+		<br/>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<h5 class="card-header">Withdraws</h5>
+					<div class="card-body">
+						<div id="withdraw-events"></div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </body>

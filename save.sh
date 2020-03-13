@@ -2,7 +2,7 @@
 
 
 
-~/bin/claat-linux-386 export src/tutorial.md
+~/bin/claat-linux-386 export tutorial.md
 
 cp -r ethereum-handson/* docs
 
@@ -17,6 +17,3 @@ pwd
 #git commit -m "tuto"
 
 #git push origin master
-
-
-

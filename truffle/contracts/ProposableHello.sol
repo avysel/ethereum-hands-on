@@ -1,32 +1,14 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.16;
 
-contract owned {
-    address payable owner;
+import "./Ownable.sol";
 
-    // Contract constructor: set owner
-    constructor() public {
-        owner = msg.sender;
-    }
-
-    // Access control modifier
-    modifier onlyOwner {
-        require(msg.sender == owner, "Only the contract owner can call this function");
-        _;
-    }
-
-    // Contract destructor
-    function destroy() public onlyOwner {
-        selfdestruct(owner);
-    }
-
-}
-
-contract ProposableHello is owned {
+contract ProposableHello is Ownable {
 
     string private name;
 
     event NameChanged(string newName, address userAddress, uint value);
     event Withdraw(address ownerAddress, uint balance);
+    event CreateProposal(string newName, address sender, uint price);
 
     struct Proposal {
         address payable sender;
@@ -67,6 +49,7 @@ contract ProposableHello is owned {
         require(msg.value >= 2 ether, "Pay 2 ETH or more");
         proposers.push(msg.sender);
         proposals[msg.sender] = Proposal(msg.sender, newName, msg.value, now);
+        emit CreateProposal(newName, msg.sender, msg.value);
     }
 
     function selectBestProposal() public onlyOwner {
