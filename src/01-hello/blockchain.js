@@ -9,7 +9,6 @@ function displayAll() {
 	displayBlockchainInfo();
 	displayName();
 	displayEvents();
-	displayWithdrawEvents();
 }
 
 /**
@@ -49,7 +48,7 @@ async function initWeb3() {
 function initContract() {
 	console.log("Load contract at : "+contractAddress);
 	try {
-		helloContract =  new web3.eth.Contract(payableHelloABI, contractAddress);
+		helloContract =  new web3.eth.Contract(helloABI, contractAddress);
 	}
 	catch(error) {
 		console.error("Error loading contract : "+error);

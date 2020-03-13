@@ -1,6 +1,6 @@
 
 // address of smart contract
-const contractAddress = "0x36e80547B55baa2a7442C23714e3529c1148aE93";
+const contractAddress = "0x91717D082F621D6b023E385d4Fa4DF52336FA970";
 
 // contract global object
 var helloContract;
@@ -10,6 +10,7 @@ function displayAll() {
 	displayName();
 	displayEvents();
 	displayWithdrawEvents();
+	displayProposals();
 }
 
 /**
@@ -49,7 +50,7 @@ async function initWeb3() {
 function initContract() {
 	console.log("Load contract at : "+contractAddress);
 	try {
-		helloContract =  new web3.eth.Contract(payableHelloABI, contractAddress);
+		helloContract =  new web3.eth.Contract(proposableHelloABI, contractAddress);
 	}
 	catch(error) {
 		console.error("Error loading contract : "+error);
@@ -100,45 +101,6 @@ async function displayName() {
 * Create a transaction to udpate the name in the smart contract
 * @param newName : the new name to set
 * @param account : the account that will create the transaction
-*/
-/*async function setName(newName, account) {
-	console.log("Set new name : "+newName);
-
-	// first, estimate gas cost
-	helloContract.methods.setName(newName).estimateGas({from: account})
-	.then( (gasAmount) => {
-
-		console.log("Estimated gas : "+gasAmount);
-
-		// then, send a transaction to setName using previously estimated gas amount
-		helloContract.methods.setName(newName).send({from: account, gas: gasAmount})
-		.on('transactionHash', (hash) => {
-			console.log("Tx created "+hash);
-			$('#txLink').html("<a target='_blank' href='https://ropsten.etherscan.io/tx/"+hash+"'>"+hash+"</a>");
-		})
-		.on('receipt', (receipt) => {
-			console.log("Tx confirmed in block "+receipt.blockNumber);
-			displayAll();
-			stopWaiting();
-		})
-		.on('confirmation', (confirmationNumber, receipt) => {
-			//console.log("confirmation "+confirmationNumber);
-		})
-		.on('error',(error) => {
-			console.error("Error : "+error);
-			stopWaiting();
-		});
-
-	})
-	.catch((error) => {console.error(error); stopWaiting(); });
-}*/
-
-// ------ From here, need PayableHello ----------
-
-/**
-* Create a transaction to udpate the name in the smart contract
-* @param newName : the new name to set
-* @param account : the account that will create the transaction
 * @param price : the price in ETH to pay to change the name
 */
 async function setName(newName, account, price) {
@@ -158,6 +120,8 @@ async function setName(newName, account, price) {
 		})
 		.on('receipt', (receipt) => {
 			console.log("Tx confirmed in block "+receipt.blockNumber);
+			displayAll();
+			stopWaiting();
 		})
 		.on('confirmation', (confirmationNumber, receipt) => {
 			//console.log("confirmation "+confirmationNumber);
@@ -209,9 +173,7 @@ async function withdraw(account) {
 		})
 		.on('receipt', (receipt) => {
 			console.log("Tx confirmed in block "+receipt.blockNumber);
-			displayName();
-			displayBlockchainInfo();
-			displayEvents();
+			displayAll();
 			stopWaiting();
 		})
 		.on('confirmation', (confirmationNumber, receipt) => {
@@ -241,4 +203,53 @@ async function displayWithdrawEvents() {
 		htmlEvents += "</ul>";
         $('#withdraw-events').html(htmlEvents);
 	});
+}
+
+/**
+* Read and display smart contract withdraw events
+*/
+async function displayProposals() {
+
+	helloContract.methods.getProposals().call()
+	.then( (proposals) => {
+			console.log(proposals);
+		}
+	)
+	.catch( (error) => {
+		console.error("Error getting proposals : "+error);
+	});
+}
+
+/**
+*
+*/
+async function selectBestProposal(account) {
+	console.log("Call selectBestProposal with "+account);
+
+	helloContract.methods.selectBestProposal().estimateGas({from: account})
+	.then( (gasAmount) => {
+
+		console.log("Estimated gas : "+gasAmount);
+
+		// then, send a transaction to setName using previously estimated gas amount
+		helloContract.methods.selectBestProposal().send({from: account, gas: gasAmount})
+		.on('transactionHash', (hash) => {
+			console.log("Tx created "+hash);
+			$('#txLink').html("<a target='_blank' href='https://ropsten.etherscan.io/tx/"+hash+"'>"+hash+"</a>");
+		})
+		.on('receipt', (receipt) => {
+			console.log("Tx confirmed in block "+receipt.blockNumber);
+			displayAll();
+			stopWaiting();
+		})
+		.on('confirmation', (confirmationNumber, receipt) => {
+			//console.log("confirmation "+confirmationNumber);
+		})
+		.on('error',(error) => {
+			console.error("Error : "+error);
+			stopWaiting();
+		});
+
+	})
+	.catch((error) => {console.error(error); stopWaiting(); });
 }

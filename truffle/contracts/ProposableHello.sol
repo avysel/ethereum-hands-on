@@ -1,4 +1,5 @@
 pragma solidity ^0.5.16;
+pragma experimental ABIEncoderV2;
 
 import "./Ownable.sol";
 
@@ -26,8 +27,7 @@ contract ProposableHello is Ownable {
         name = "nobody";
     }
 
-    function setName(string memory _newName) public payable {
-        require(msg.value >= 2 ether, "Pay 2 ETH or more");
+    function setName(string memory _newName) internal {
         name = _newName;
         emit NameChanged(_newName, msg.sender, msg.value);
     }
@@ -86,6 +86,16 @@ contract ProposableHello is Ownable {
         name = bestProposal.name;
         emit NameChanged(bestProposal.name, bestProposal.sender, bestProposal.value);
 
+    }
+
+    function getProposals() external view returns(Proposal[] memory) {
+        Proposal[] memory result = new Proposal[](proposers.length);
+
+        for (uint i=1; i<proposers.length; i++) {
+            result[i] = proposals[proposers[i]];
+        }
+
+        return result;
     }
 
 }

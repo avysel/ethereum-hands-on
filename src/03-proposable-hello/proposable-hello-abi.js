@@ -152,21 +152,6 @@ var proposableHelloABI =   [
                                  "type": "function"
                                },
                                {
-                                 "constant": false,
-                                 "inputs": [
-                                   {
-                                     "internalType": "string",
-                                     "name": "_newName",
-                                     "type": "string"
-                                   }
-                                 ],
-                                 "name": "setName",
-                                 "outputs": [],
-                                 "payable": true,
-                                 "stateMutability": "payable",
-                                 "type": "function"
-                               },
-                               {
                                  "constant": true,
                                  "inputs": [],
                                  "name": "getName",
@@ -212,6 +197,43 @@ var proposableHelloABI =   [
                                  "outputs": [],
                                  "payable": false,
                                  "stateMutability": "nonpayable",
+                                 "type": "function"
+                               },
+                               {
+                                 "constant": true,
+                                 "inputs": [],
+                                 "name": "getProposals",
+                                 "outputs": [
+                                   {
+                                     "components": [
+                                       {
+                                         "internalType": "address payable",
+                                         "name": "sender",
+                                         "type": "address"
+                                       },
+                                       {
+                                         "internalType": "string",
+                                         "name": "name",
+                                         "type": "string"
+                                       },
+                                       {
+                                         "internalType": "uint256",
+                                         "name": "value",
+                                         "type": "uint256"
+                                       },
+                                       {
+                                         "internalType": "uint256",
+                                         "name": "time",
+                                         "type": "uint256"
+                                       }
+                                     ],
+                                     "internalType": "struct ProposableHello.Proposal[]",
+                                     "name": "",
+                                     "type": "tuple[]"
+                                   }
+                                 ],
+                                 "payable": false,
+                                 "stateMutability": "view",
                                  "type": "function"
                                }
                              ];

@@ -18,6 +18,11 @@ module.exports = {
     // },
 
 
+    ganache: {
+      host: "localhost",
+      port: 7545,
+      network_id: "5777"
+    },
      ropsten: {
        provider: () => new HDWalletProvider(mnemonic, `https://ropsten.infura.io/v3/YOUR-PROJECT-ID`),
        network_id: 3,       // Ropsten's id

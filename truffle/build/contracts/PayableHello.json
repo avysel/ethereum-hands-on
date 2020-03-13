@@ -2492,9 +2492,62 @@
     "name": "solc",
     "version": "0.5.16+commit.9c3226ce.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "5777": {
+      "events": {
+        "0xc48488fd27c79fd358a3f6f9be6a1a4b906113b71ab5344e1bfaf56c62da9d86": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "newName",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "userAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            }
+          ],
+          "name": "NameChanged",
+          "type": "event"
+        },
+        "0x884edad9ce6fa2440d8a54cc123490eb96d2768479d49ff9c7366125a9424364": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "ownerAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "balance",
+              "type": "uint256"
+            }
+          ],
+          "name": "Withdraw",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0xCc78D34068382a5D72A8d4BAF852F60aB06a6fD8",
+      "transactionHash": "0x269445523162a3d75719a0289277822886422970ae0a2fe70c3b5f2cdfc4f111"
+    }
+  },
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-03-13T10:11:16.918Z",
+  "updatedAt": "2020-03-13T14:30:53.788Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },

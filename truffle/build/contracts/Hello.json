@@ -928,14 +928,29 @@
   },
   "networks": {
     "5777": {
-      "events": {},
+      "events": {
+        "0xb0a4d76c825dc814a59c1a90f520a677f3f0843980294ef90afe1d7616a1cf70": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "bytes32",
+              "name": "newName",
+              "type": "bytes32"
+            }
+          ],
+          "name": "NameChanged",
+          "type": "event"
+        }
+      },
       "links": {},
-      "address": "0xf2c3BB86bb092bA1996beF4D5352FAe64e567477",
-      "transactionHash": "0x94d74387d4212735ba9e6390676895dbdf1c7a6270c22cd02027560e6adf5c24"
+      "address": "0x831667BD26A743c817a4385f52B614e4B88DA638",
+      "transactionHash": "0x12ed3a401310aba64ed5ac91b1e649c1cfebe4a1f0c55a312b6cd86af668afaa"
     }
   },
   "schemaVersion": "3.0.23",
-  "updatedAt": "2020-03-13T10:11:16.917Z",
+  "updatedAt": "2020-03-13T14:30:53.967Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
